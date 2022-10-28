@@ -13,6 +13,7 @@ public class FPSController : MonoBehaviour
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
+    public int jumps;
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
@@ -42,9 +43,13 @@ public class FPSController : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && canMove && (characterController.isGrounded || jumps > 0))
         {
+            Debug.Log("jump");
             moveDirection.y = jumpSpeed;
+            jumps--;
+            if (characterController.isGrounded) jumps = 1;
+            
         }
         else
         {
