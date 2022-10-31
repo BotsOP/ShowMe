@@ -161,10 +161,11 @@ public class PathCreator : MonoBehaviour
     {
         int maxCount = transformList.Count - 1;
         Vector3 lastPos = transformList[maxCount].position;
-        
-        Transform point1 = Instantiate(original, lastPos + (Vector3.left + Vector3.forward) * 0.5f, quaternion.identity, transformList[^1]).transform;
-        Transform point3 = Instantiate(original, lastPos + Vector3.right, quaternion.identity, transform).transform;
-        Transform point2 = Instantiate(original, lastPos + (Vector3.right + Vector3.forward) * 0.5f, quaternion.identity, point3).transform;
+
+        Vector3 localScale = transform.localScale;
+        Transform point1 = Instantiate(original, lastPos + (Vector3.left + Vector3.forward) * (0.5f * 2 * localScale.x), quaternion.identity, transformList[^1]).transform;
+        Transform point3 = Instantiate(original, lastPos + Vector3.right * (2 * localScale.x), quaternion.identity, transform).transform;
+        Transform point2 = Instantiate(original, lastPos + (Vector3.right + Vector3.forward) * (0.5f * 2 * localScale.x), quaternion.identity, point3).transform;
 
         transformList.Add(point1);
         transformList.Add(point2);
