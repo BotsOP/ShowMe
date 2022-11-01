@@ -29,11 +29,11 @@ public class PathCreator : MonoBehaviour
     {
         if (transformList.Count <= 0)
         {
-            Debug.Log($"test");
-            Transform point1 = Instantiate(original, Vector3.left, quaternion.identity, transform).transform;
-            Transform point2 = Instantiate(original, (Vector3.left + Vector3.forward) * 0.5f, quaternion.identity, point1).transform;
-            Transform point4 = Instantiate(original, Vector3.right, quaternion.identity, transform).transform;
-            Transform point3 = Instantiate(original, (Vector3.right + Vector3.forward) * 0.5f, quaternion.identity, point4).transform;
+            Vector3 localScale = transform.localScale;
+            Transform point1 = Instantiate(original, Vector3.left * (2 * localScale.x), quaternion.identity, transform).transform;
+            Transform point2 = Instantiate(original, (Vector3.left + Vector3.forward) * (0.5f * 2 * localScale.x), quaternion.identity, point1).transform;
+            Transform point4 = Instantiate(original, Vector3.right * (2 * localScale.x), quaternion.identity, transform).transform;
+            Transform point3 = Instantiate(original, (Vector3.right + Vector3.forward) * (0.5f * 2 * localScale.x), quaternion.identity, point4).transform;
 
             transformList.Add(point1);
             transformList.Add(point2);
@@ -188,12 +188,18 @@ public class PathCreator : MonoBehaviour
 
     public void ResetPoints()
     {
-        for (int i = 0; i < transformList.Count; i++)
+        GameObject[] points = new GameObject[transformList.Count - 1];
+        for (int i = 0; i < transformList.Count - 1; i++)
         {
-            DestroyImmediate(transformList[i].gameObject);
+            points[i] = transformList[i].gameObject;
         }
 
         transformList.Clear();
+
+        foreach (GameObject point in points)
+        {
+            DestroyImmediate(point);
+        }
     }
 
 }

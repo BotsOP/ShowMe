@@ -92,7 +92,6 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 
 		
 		IsGrounded = Physics.CheckSphere(GroundCheck.position, GroundDistance, GroundMask);
-		Debug.Log(IsGrounded);
 		QueueJump();
 
 		/* Movement, here's the important part */
@@ -189,11 +188,11 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 		// Apply gravity
 		playerVelocity.y += gravity * Time.deltaTime;
 
-		/**
-			* Air control occurs when the player is in the air, it allows
-			* players to move side to side much faster rather than being
-			* 'sluggish' when it comes to cornering.
-			*/
+		/*
+		* Air control occurs when the player is in the air, it allows
+		* players to move side to side much faster rather than being
+		* 'sluggish' when it comes to cornering.
+		*/
 
 		void AirControl(Vector3 wishdir, float wishspeed)
 		{
