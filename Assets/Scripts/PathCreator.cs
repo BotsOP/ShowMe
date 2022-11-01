@@ -175,11 +175,15 @@ public class PathCreator : MonoBehaviour
     public void RemoveSegment()
     {
         int maxCount = transformList.Count - 1;
-        DestroyImmediate(transformList[maxCount].gameObject);
-        DestroyImmediate(transformList[maxCount - 1].gameObject);
-        DestroyImmediate(transformList[maxCount - 2].gameObject);
+        GameObject point1 = transformList[^1].gameObject;
+        GameObject point2 = transformList[^2].gameObject;
+        GameObject point3 = transformList[^3].gameObject;
         
         transformList.RemoveRange(maxCount - 2, 3);
+        
+        DestroyImmediate(point1);
+        DestroyImmediate(point2);
+        DestroyImmediate(point3);
     }
 
     public void ResetPoints()
