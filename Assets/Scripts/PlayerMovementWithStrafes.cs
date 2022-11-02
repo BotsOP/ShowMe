@@ -21,7 +21,7 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 	public float airControl = 0.3f;  // How precise air control is
 	public float sideStrafeAcceleration = 50f;   // How fast acceleration occurs to get up to sideStrafeSpeed when side strafing
 	public float sideStrafeSpeed = 1f;    // What the max speed to generate when side strafing
-	public float jumpSpeed = 8.0f;
+	public float jumpSpeed = 12.0f;
 	public float friction = 6f;
 	private float playerTopVelocity = 0;
 	public float playerFriction = 0f;
@@ -37,7 +37,6 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 	float control;
 	float drop;
 
-	public bool JumpQueue = false;
 	public bool wishJump = false;
 	public bool dubbelJump = false;
 
@@ -118,13 +117,14 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 	//Queues the next jump
 	void QueueJump()
 	{
+		wishJump = false;
         if (IsGrounded)
         {
 			dubbelJump = false;
         }
 		if (Input.GetButton("Jump") && IsGrounded)
 		{
-			wishJump = true;
+			playerVelocity.y = jumpSpeed;
 		}
 
 		if(Input.GetButtonDown("Jump") && !IsGrounded && !dubbelJump)
