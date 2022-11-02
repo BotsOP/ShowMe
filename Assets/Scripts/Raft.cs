@@ -9,7 +9,7 @@ public class Raft : MonoBehaviour
     [SerializeField] private int currentSegment;
     [SerializeField] private float raftSpeed = 5;
 
-    private void Update()
+    private void FixedUpdate()
     {
         float t = Time.time / raftSpeed;
         OrientedPoint orientedPoint = GetOrientedPointInCurve(t % 1, (int)t % path.segmentCount);

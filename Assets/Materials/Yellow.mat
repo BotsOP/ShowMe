@@ -7,42 +7,26 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_StylizedWater
-  m_Shader: {fileID: 4800000, guid: 5bfd7496dd66bcb49b2849bacdf33723, type: 3}
-  m_ValidKeywords:
-  - _NORMALMAP
-  m_InvalidKeywords:
-  - _ALPHAPREMULTIPLY_ON
-  - _SURFACE_TYPE_TRANSPARENT
+  m_Name: Yellow
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses:
-  - DepthOnly
-  - SHADOWCASTER
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 9cc4371e4d828244fa1c2a4f628e7190, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 10, y: 30}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 17fa0c25840f745449b4a1ef10e99b96, type: 3}
-        m_Scale: {x: 80, y: 80}
-        m_Offset: {x: 1, y: 1}
-    - _BumpMap2:
-        m_Texture: {fileID: 2800000, guid: ab0efe470264e4c4c90828fa4afb658d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _CamTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 2, y: 2}
-        m_Offset: {x: 0, y: 0}
-    - _ColorMap:
-        m_Texture: {fileID: 2800000, guid: d30b8fc89717b144f8799f197783b444, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -58,22 +42,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: f173fb49b37583842849b4ee3fbf382f, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d30b8fc89717b144f8799f197783b444, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Maintex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 10, y: 30}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -83,10 +59,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _RefractionMap:
-        m_Texture: {fileID: 2800000, guid: e475b3e69c11c1d45887a88a06733056, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -108,15 +80,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _Blend: 1
-    - _BumpScale: 0.2
+    - _Blend: 0
+    - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -126,24 +98,29 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RefractionScale: 0
-    - _RefractionStrength: 0.274
-    - _Smoothness: 0.26
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularSize: 0
     - _SrcBlend: 1
-    - _Surface: 1
-    - _WaterFogDensity: 0.11
+    - _Surface: 0
     - _WorkflowMode: 1
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.042862147, g: 0.13207537, b: 0.0948497, a: 0.20784314}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorTint: {r: 1, g: 1, b: 1, a: 0.90588236}
-    - _EmissionColor: {r: 23.181944, g: 12.418899, b: 5.133145, a: 1}
+    - _BaseColor: {r: 1, g: 0.8812067, b: 0.24905658, a: 1}
+    - _Color: {r: 1, g: 0.8812067, b: 0.24905655, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _WaterBottomColor: {r: 0.09878961, g: 0.23584908, b: 0.20386854, a: 1}
-    - _WaterFogColor: {r: 0.058823526, g: 0.8666667, b: 0.7284681, a: 1}
-    - _WaterTopColor: {r: 0.22634387, g: 0.6415094, b: 0.58092976, a: 1}
   m_BuildTextureStacks: []
+--- !u!114 &1581200666353057742
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

@@ -65,7 +65,17 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 
 	public Transform player;
 	Vector3 udp;
-
+	[SerializeField]
+	private LayerMask waterMask;
+	bool InWater => submergence > 0f;
+	float submergence;
+	
+	[SerializeField]
+	float submergenceOffset = 0.5f;
+	[SerializeField, Min(0.1f)]
+	float submergenceRange = 1f;
+	[SerializeField, Range(0f, 10f)]
+	float waterDrag = 1f;
 
 	private void Start()
 	{
@@ -85,7 +95,6 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 		ZVelocity = Mathf.Abs(PlayerVel.z);
 		XVelocity = Mathf.Abs(PlayerVel.x);
 
-
 		ModulasSpeed = Mathf.Sqrt(PlayerVel.z * PlayerVel.z + PlayerVel.x * PlayerVel.x);
 
 		#endregion
@@ -96,9 +105,13 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 
 		/* Movement, here's the important part */
 		if (controller.isGrounded)
+		{
 			GroundMove();
+		}
 		else if (!controller.isGrounded)
+		{
 			AirMove();
+		}
 
 		// Move the controller
 		controller.Move(playerVelocity * Time.deltaTime);
@@ -107,7 +120,9 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 		udp = playerVelocity;
 		udp.y = 0;
 		if (udp.magnitude > playerTopVelocity)
+		{
 			playerTopVelocity = udp.magnitude;
+		}
 	}
 	public void SetMovementDir()
 	{
@@ -122,16 +137,16 @@ public class PlayerMovementWithStrafes : MonoBehaviour
         {
 			dubbelJump = false;
         }
-		if (Input.GetButton("Jump") && IsGrounded)
+		if (Input.GetButtonDown("Jump") && IsGrounded)
 		{
 			wishJump = true;
 		}
 
-		if(Input.GetButtonDown("Jump") && !IsGrounded && !dubbelJump)
-        {
+		if (Input.GetButtonDown("Jump") && !IsGrounded && !dubbelJump)
+		{
 			playerVelocity.y = jumpSpeed;
 			dubbelJump = true;
-        }
+		}
 	}
 
 	//Calculates wish acceleration
@@ -227,9 +242,7 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 
 		}
 	}
-	/**
-		* Called every frame when the engine detects that the player is on the ground
-		*/
+	// Called every frame when the engine detects that the player is on the ground
 	public void GroundMove()
 	{
 		// Do not apply friction if the player is queueing up the next jump
@@ -252,16 +265,15 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 
 		// Reset the gravity velocity
 		playerVelocity.y = 0;
-
 		if (wishJump)
 		{
 			playerVelocity.y = jumpSpeed;
 			wishJump = false;
 		}
 
-		/**
-			* Applies friction to the player, called in both the air and on the ground
-			*/
+		/*
+		* Applies friction to the player, called in both the air and on the ground
+		*/
 		void ApplyFriction(float t)
 		{
 			vec = playerVelocity; // Equivalent to: VectorCopy();
@@ -286,6 +298,34 @@ public class PlayerMovementWithStrafes : MonoBehaviour
 			playerVelocity.x *= newspeed;
 			// playerVelocity.y *= newspeed;
 			playerVelocity.z *= newspeed;
+		}
+	}
+	
+	void EvaluateSubmergence () {
+		if (Physics.Raycast(
+			    transform.position + Vector3.up * submergenceOffset,
+			    -Vector3.up, out RaycastHit hit, submergenceRange + 1f,
+			    waterMask, QueryTriggerInteraction.Collide
+		    )) {
+			submergence = 1f - hit.distance / submergenceRange;
+			
+			Debug.Log(submergence);
+		}
+		else {
+			submergence = 1f;
+		}
+	}
+	
+	void OnTriggerEnter (Collider other) {
+		if ((waterMask & (1 << other.gameObject.layer)) != 0)
+		{
+			EvaluateSubmergence();
+		}
+	}
+
+	void OnTriggerStay (Collider other) {
+		if ((waterMask & (1 << other.gameObject.layer)) != 0) {
+			EvaluateSubmergence();
 		}
 	}
 }
