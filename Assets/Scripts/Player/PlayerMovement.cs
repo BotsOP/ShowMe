@@ -1,18 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Ground settings")]
     [SerializeField, Range(0f, 100f)]
     float maxSpeed = 10f;
-    [SerializeField, Range(0f, 100f)]
-    float maxAcceleration = 100f, maxAirAcceleration = 50f;
+    [SerializeField, Range(0f, 100f)] 
+    private float maxAcceleration = 100f, maxAirAcceleration = 50f;
     [SerializeField, Range(0f, 10f)]
     float jumpHeight = 2f;
     [SerializeField, Range(0, 5)]
-    int maxAirJumps = 0;
+    int maxAirJumps = 2;
+    
+    [Header("Physics settings")]
     [SerializeField, Range(0f, 90f)]
     float maxGroundAngle = 25f, maxStairsAngle = 50f;
     [SerializeField, Range(0f, 100f)]
@@ -20,32 +24,57 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Min(0f)]
     float probeDistance = 1f;
     [SerializeField]
-    LayerMask probeMask = -1, stairsMask = -1;
+    LayerMask probeMask = -1, stairsMask = -1, waterMask = 0;
+    
+    [Header("In water settings")]
+    [SerializeField, Range(0f, 2f)] 
+    private float maxWaterAcceleration = 1f;
+    [SerializeField]
+    float submergenceOffset = 0.5f;
+    [SerializeField, Min(0.1f)]
+    float submergenceRange = 1f;
+    [SerializeField, Range(0f, 10f)]
+    float waterDrag = 1f;
+    [SerializeField, Min(0f)]
+    float buoyancy = 1f;
+    
+    [Header("Water suit settings")]
+    [SerializeField, Range(0f, 100f)]
+    float maxSuitSpeed = 10f;
+    [SerializeField, Range(0f, 10f)]
+    float suitJumpHeight = 2f;
+    [SerializeField, Range(0f, 20f)]
+    float ropePullForce = 10f;
+    [SerializeField, Range(0f, 200f)]
+    float ropeLength = 50f;
+    [SerializeField, Range(0, 5)]
+    int maxSuitAirJumps = 0;
+    
+    [Header("Mouse settings")]
     [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
     float mouseSensitivity;
+
+    [Header("Other stuff")]
+    [SerializeField]
+    private LineRenderer lr;
+    [SerializeField]
+    private Transform raftTransform;
     
     Vector3 velocity, desiredVelocity, connectionVelocity;
     Vector3 contactNormal, steepNormal;
     Vector3 connectionWorldPosition, connectionLocalPosition;
-    bool desiredJump;
+    bool desiredJump, waterSuit;
     int groundContactCount, steepContactCount;
     int stepsSinceLastGrounded, stepsSinceLastJump;
-    bool OnGround
-    {
-        get {
-            return groundContactCount > 0;
-        }
-    }
-    bool OnSteep
-    {
-        get {
-            return steepContactCount > 0;
-        }
-    }
-
+    bool OnGround => groundContactCount > 0;
+    bool OnSteep => steepContactCount > 0;
+    bool InWater => submergence > 0f;
+    float submergence;
     float xRotation = 0f;
+    private float maxSpeedPrev, jumpHeightPrev;
+    private int maxAirJumpsPrev;
     int jumpPhase;
     float minGroundDotProduct, minStairsDotProduct;
     Rigidbody body, connectedBody, previousConnectedBody;
@@ -60,7 +89,19 @@ public class PlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        maxSpeedPrev = maxSpeed;
+        maxAirJumpsPrev = maxAirJumps;
+        jumpHeightPrev = jumpHeight;
         OnValidate();
+    }
+
+    private void OnEnable()
+    {
+        EventSystem<bool>.Subscribe(EventType.CHANGED_SUIT, ChangeWaterSuit);
+    }
+    private void OnDestroy()
+    {
+        EventSystem<bool>.Unsubscribe(EventType.CHANGED_SUIT, ChangeWaterSuit);
     }
 
     void Update () 
@@ -80,7 +121,37 @@ public class PlayerMovement : MonoBehaviour
         
         desiredJump |= Input.GetButtonDown("Jump");
 
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            ChangeWaterSuit(!waterSuit);
+        }
+
+        if (waterSuit)
+        {
+            lr.SetPosition(0, raftTransform.position);
+            lr.SetPosition(1, transform.position);
+        }
+
         MouseLook();
+    }
+
+    void ChangeWaterSuit(bool suit)
+    {
+        waterSuit = suit;
+        if (suit)
+        {
+            lr.enabled = true;
+            maxSpeed = maxSuitSpeed;
+            maxAirJumps = maxSuitAirJumps;
+            jumpHeight = suitJumpHeight;
+        }
+        else
+        {
+            lr.enabled = false;
+            maxSpeed = maxSpeedPrev;
+            maxAirJumps = maxAirJumpsPrev;
+            jumpHeight = jumpHeightPrev;
+        }
     }
     
     void MouseLook()
@@ -98,15 +169,21 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate () 
     {
         UpdateState();
+        
+        if (InWater) {
+            velocity *= 1f - waterDrag * submergence * Time.deltaTime;
+        }
+        
         AdjustVelocity();
         
-        if (desiredJump) 
+        if (desiredJump && !InWater) 
         {
             desiredJump = false;
             Jump();
         }
-        
+
         body.velocity = velocity;
+
         ClearState();
         MouseLook();
     }
@@ -119,7 +196,11 @@ public class PlayerMovement : MonoBehaviour
         if (OnGround || SnapToGround() || CheckSteepContacts()) 
         {
             stepsSinceLastGrounded = 0;
-            jumpPhase = 0;
+            if (stepsSinceLastJump > 1) 
+            {
+                jumpPhase = 0;
+            }
+            //if someting break put jumphase = 0 here
             if (groundContactCount > 1) 
             {
                 contactNormal.Normalize();
@@ -169,7 +250,7 @@ public class PlayerMovement : MonoBehaviour
         {
             return false;
         }
-        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance, probeMask)) 
+        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance, probeMask, QueryTriggerInteraction.Ignore)) 
         {
             return false;
         }
@@ -208,11 +289,6 @@ public class PlayerMovement : MonoBehaviour
         else {
             return;
         }
-
-        if (stepsSinceLastJump > 1) 
-        {
-            jumpPhase = 0;
-        }
         
         jumpPhase += 1;
         float jumpSpeed = Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
@@ -227,8 +303,7 @@ public class PlayerMovement : MonoBehaviour
         velocity += jumpDirection * jumpSpeed;
         
     }
-    
-    
+
     void OnCollisionEnter (Collision collision) 
     {
         EvaluateCollision(collision);
@@ -237,6 +312,31 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionStay (Collision collision) 
     {
         EvaluateCollision(collision);
+    }
+    
+    void OnTriggerEnter (Collider other) {
+        if ((waterMask & (1 << other.gameObject.layer)) != 0) {
+            EvaluateSubmergence();
+        }
+    }
+
+    void OnTriggerStay (Collider other) {
+        if ((waterMask & (1 << other.gameObject.layer)) != 0) {
+            EvaluateSubmergence();
+        }
+    }
+    
+    void EvaluateSubmergence () {
+        if (Physics.Raycast(
+                body.position + Vector3.up * submergenceOffset,
+                -Vector3.up, out RaycastHit hit, submergenceRange + 1f,
+                waterMask, QueryTriggerInteraction.Collide
+            )) {
+            submergence = 1f - hit.distance / submergenceRange;
+        }
+        else {
+            submergence = 1f;
+        }
     }
     
     void EvaluateCollision (Collision collision) 
@@ -250,7 +350,6 @@ public class PlayerMovement : MonoBehaviour
                 groundContactCount += 1;
                 contactNormal += normal;
                 connectedBody = collision.rigidbody;
-                
             }
             else if (normal.y > -0.01f) 
             {
@@ -270,22 +369,42 @@ public class PlayerMovement : MonoBehaviour
     
     void AdjustVelocity () 
     {
-        Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
-        Vector3 zAxis = ProjectOnContactPlane(Vector3.forward).normalized;
-        
-        Vector3 relativeVelocity = velocity - connectionVelocity;
-        float currentX = Vector3.Dot(relativeVelocity, xAxis);
-        float currentZ = Vector3.Dot(relativeVelocity, zAxis);
-        
-        float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
-        float maxSpeedChange = acceleration * Time.deltaTime;
+        if (InWater && waterSuit) {
+            velocity += Physics.gravity * ((1f - buoyancy * submergence) * Time.deltaTime);
+            Vector3 waterVelocity = Input.GetAxis("Vertical") * cameraTransform.forward + 
+                                    Input.GetAxis("Horizontal") * cameraTransform.right;
+            
+            velocity += waterVelocity * maxWaterAcceleration;
 
-        float newX =
-            Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
-        float newZ =
-            Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
+            if (Input.GetKey(KeyCode.Space))
+            {
+                velocity += Vector3.up * maxWaterAcceleration;
+            }
+        }
+        else if(!InWater)
+        {
+            Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
+            Vector3 zAxis = ProjectOnContactPlane(Vector3.forward).normalized;
         
-        velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+            Vector3 relativeVelocity = velocity - connectionVelocity;
+            float currentX = Vector3.Dot(relativeVelocity, xAxis);
+            float currentZ = Vector3.Dot(relativeVelocity, zAxis);
+        
+            float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
+            float maxSpeedChange = acceleration * Time.deltaTime;
+
+            float newX =
+                Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
+            float newZ =
+                Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
+        
+            velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+        }
+        if (Vector3.Distance(transform.position, raftTransform.position) > ropeLength && waterSuit)
+        {
+            Debug.Log($"ropedis {Vector3.Distance(transform.position, raftTransform.position)}");
+            velocity += (raftTransform.position - transform.position).normalized * ropePullForce;
+        }
     }
     
     float GetMinDot (int layer) 
