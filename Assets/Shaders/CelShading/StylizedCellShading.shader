@@ -1,13 +1,8 @@
-Shader "Stylized/Water" {
+Shader "Stylized/CellShading" {
     Properties{
         [Header(Surface options)] // Creates a text header
-        [MainTexture] _BaseMap("Color", 2D) = "white" {}
+        [MainTexture] _MainTex("Color", 2D) = "white" {}
         [MainColor] _BaseColor("Tint", Color) = (1, 1, 1, 1)
-        _WaterBottomColor("Dark water color", Color) = (0, 1, 1, 1)
-        _WaterTopColor("Light water color", Color) = (0, 1, 1, 1)
-        _WaterFogColor("Water fog color", Color) = (0, 1, 1, 1)
-        _WaterFogDensity("Water fog density", Range(0, 2)) = 0.1
-        _RefractionStrength ("Refraction Strength", Range(0, 1)) = 0.25
         _BumpScale("Normal scale", Float) = 0
         _BumpMap("Normal map", 2D) = "bump" {}
 
@@ -18,10 +13,8 @@ Shader "Stylized/Water" {
         
         Pass {
             Name "ForwardLit"
-            Tags{"LightMode" = "UseColorTexture"}
+            Tags{"LightMode" = "UniversalForward"}
             
-            Zwrite on
-
             HLSLPROGRAM
 
             #pragma shader_feature_local _NORMALMAP 
@@ -41,7 +34,7 @@ Shader "Stylized/Water" {
             #pragma vertex Vertex
             #pragma fragment Fragment
 
-            #include "StylizedWaterLitPass.hlsl"
+            #include "StylizedShadingLitPass.hlsl"
             ENDHLSL
         }
 

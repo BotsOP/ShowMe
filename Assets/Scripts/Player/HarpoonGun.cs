@@ -14,38 +14,72 @@ public class HarpoonGun : MonoBehaviour
     private float harpoonDonePull = 1;
     [SerializeField, Range(0.1f, 5f)] 
     private float gunDirectionChangeSpeed = 1;
-    [SerializeField] private GameObject harpoonModel;
-    [SerializeField] private GameObject harpoon;
+    [SerializeField] private Transform harpoonGunPos;
+    [SerializeField] private GameObject harpoonGrappleHook;
+    [SerializeField] private GameObject harpoonBullet;
+    [SerializeField] private GameObject bullet;
     [SerializeField] private LayerMask mask = -1;
     [SerializeField] private Transform player;
-    [SerializeField] private Rigidbody playerRB;
     [SerializeField] private LineRenderer lr;
     private GameObject lastHarpoon;
     private Harpoon harpoonComponent;
+    private bool inSuit;
+    
+    private void OnEnable()
+    {
+        EventSystem<bool>.Subscribe(EventType.CHANGED_SUIT, ChangeWaterSuit);
+    }
+    private void OnDestroy()
+    {
+        EventSystem<bool>.Unsubscribe(EventType.CHANGED_SUIT, ChangeWaterSuit);
+    }
+
+    private void ChangeWaterSuit(bool suit)
+    {
+        inSuit = suit;
+    }
+    
     void Update()
+    {
+        RotateGunToPointing();
+        if (inSuit)
+        {
+            GrappleHarpoon();
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Transform gun = harpoonGunPos.GetChild(0);
+            Instantiate(inSuit ? harpoonBullet : bullet, gun).transform.parent = null;
+        }
+    }
+    private void RotateGunToPointing()
     {
         RaycastHit hit;
         float singleStep = gunDirectionChangeSpeed * Time.deltaTime;
         if (Physics.Raycast(transform.position, transform.forward, out hit, mask))
         {
-            Vector3 lookDir = hit.point - harpoonModel.transform.position;
-            lookDir = Vector3.RotateTowards(harpoonModel.transform.forward, lookDir, singleStep, 0.0f);
-            harpoonModel.transform.rotation = Quaternion.LookRotation(lookDir);
+            Vector3 lookDir = hit.point - harpoonGunPos.position;
+            lookDir = Vector3.RotateTowards(harpoonGunPos.forward, lookDir, singleStep, 0.0f);
+            harpoonGunPos.rotation = Quaternion.LookRotation(lookDir);
         }
         else
         {
-            Vector3 lookDir = Vector3.RotateTowards(harpoonModel.transform.forward, harpoonModel.transform.position + transform.forward * 1000, singleStep, 0.0f);
-            harpoonModel.transform.rotation = Quaternion.LookRotation(lookDir);
+            Vector3 lookDir = Vector3.RotateTowards(harpoonGunPos.forward, harpoonGunPos.position + transform.forward * 1000, singleStep, 0.0f);
+            harpoonGunPos.rotation = Quaternion.LookRotation(lookDir);
         }
-        
+    }
+    private void GrappleHarpoon()
+    {
+
         if (Input.GetMouseButtonDown(1))
         {
             LaunchGrappleHarpoon();
         }
-        
+
         if (lastHarpoon)
         {
-            lr.SetPosition(0, harpoonModel.transform.position);
+            lr.SetPosition(0, harpoonGunPos.position);
             lr.SetPosition(1, lastHarpoon.transform.position);
             if (harpoonComponent.impact)
             {
@@ -66,8 +100,8 @@ public class HarpoonGun : MonoBehaviour
         {
             Destroy(lastHarpoon);
         }
-        Transform gun = harpoonModel.transform.GetChild(0);
-        lastHarpoon = Instantiate(harpoon, gun);
+        Transform gun = harpoonGunPos.GetChild(0);
+        lastHarpoon = Instantiate(harpoonGrappleHook, gun);
         lastHarpoon.transform.parent = null;
         harpoonComponent = lastHarpoon.GetComponent<Harpoon>();
         lr.enabled = true;

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1173349913723447510}
   - component: {fileID: -4265080554267542989}
   m_Layer: 4
-  m_Name: Harpoen_ProjectShowMe_2
+  m_Name: HarpoonGrappleHook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
