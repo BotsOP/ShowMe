@@ -156,6 +156,7 @@ float4 Fragment(Interpolators input) : SV_TARGET{
 		depthDifference = min(20, depthDifference);
 	}
 	float fogFactor = exp2(-_WaterFogDensity * depthDifference);
+	fogFactor = saturate(fogFactor);
 
 	//Get color below water
 	float4 background = tex2D(_GrabbedTexture, grabPassUV);

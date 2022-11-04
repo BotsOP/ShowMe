@@ -65,12 +65,13 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity, desiredVelocity, connectionVelocity;
     Vector3 contactNormal, steepNormal;
     Vector3 connectionWorldPosition, connectionLocalPosition;
+    private Vector3 oldRot, connectedRot;
     bool desiredJump, waterSuit;
     int groundContactCount, steepContactCount;
     int stepsSinceLastGrounded, stepsSinceLastJump;
     bool OnGround => groundContactCount > 0;
     bool OnSteep => steepContactCount > 0;
-    bool InWater => submergence > 0f;
+    bool InWater => submergence > 0.5f;
     float submergence;
     float xRotation = 0f;
     private float maxSpeedPrev, jumpHeightPrev;
@@ -220,8 +221,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-    void UpdateConnectionState () 
+    void UpdateConnectionState ()
     {
+        connectedRot = connectedBody.transform.eulerAngles;
+        connectedRot -= oldRot;
+        if (oldRot != Vector3.zero)
+        {
+            transform.Rotate(connectedRot);
+        }
+        oldRot = connectedBody.transform.eulerAngles;
+        
+
         if (connectedBody == previousConnectedBody) 
         {
             Vector3 connectionMovement = connectedBody.transform.TransformPoint(connectionLocalPosition) - connectionWorldPosition;
@@ -359,6 +369,12 @@ public class PlayerMovement : MonoBehaviour
                     connectedBody = collision.rigidbody;
                 }
             }
+        }
+
+        //important to keep the rotation
+        if (connectedBody)
+        {
+            oldRot = connectedBody.transform.eulerAngles;
         }
     }
     
