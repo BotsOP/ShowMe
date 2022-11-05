@@ -1,10 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class targetMove2 : MonoBehaviour
 {
+   
     public AnimationCurve curve;
     public Transform target;
     public Transform target2;
