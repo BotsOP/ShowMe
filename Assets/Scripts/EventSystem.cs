@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum EventType
 {
-    CHANGED_SUIT
+    CHANGED_SUIT,
+    SCORED_POINTS
 }
 
 

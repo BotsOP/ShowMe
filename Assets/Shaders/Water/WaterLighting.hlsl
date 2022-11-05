@@ -12,7 +12,7 @@ half3 CalculatePBRWater(BRDFData brdfData, BRDFData brdfDataClearCoat,
 	float nh = max(0, dot(normalWS, h));
 	float spec = pow(nh, lerp(48, 1000, smoothness));
 	spec = spec > 0.5f ? 1 : 0;
-	radiance *= spec * 200;
+	radiance *= spec * 50;
 
 	half3 brdf = brdfData.diffuse;
 
