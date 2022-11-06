@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
     int stepsSinceLastGrounded, stepsSinceLastJump;
     bool OnGround => groundContactCount > 0;
     bool OnSteep => steepContactCount > 0;
-    bool InWater => submergence > 0.5f;
+    bool InWater => submergence > 0.9f;
     float submergence;
     float xRotation = 0f;
     private float maxSpeedPrev, jumpHeightPrev;
