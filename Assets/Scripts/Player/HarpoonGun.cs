@@ -57,11 +57,12 @@ public class HarpoonGun : MonoBehaviour
     {
         RaycastHit hit;
         float singleStep = gunDirectionChangeSpeed * Time.deltaTime;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, mask))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, mask))
         {
             Vector3 lookDir = hit.point - harpoonGunPos.position;
             lookDir = Vector3.RotateTowards(harpoonGunPos.forward, lookDir, singleStep, 0.0f);
             harpoonGunPos.rotation = Quaternion.LookRotation(lookDir);
+            Debug.DrawLine(transform.position, hit.point);
         }
         else
         {
