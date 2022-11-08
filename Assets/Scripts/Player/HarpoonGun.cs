@@ -13,7 +13,7 @@ public class HarpoonGun : MonoBehaviour
     [SerializeField, Range(0, 2)]
     private float harpoonDonePull = 1;
     [SerializeField, Range(0.1f, 5f)] 
-    private float gunDirectionChangeSpeed = 1;
+    private float gunDirectionChangeSpeed = 5;
     [SerializeField] private Transform harpoonGunPos;
     [SerializeField] private GameObject harpoonGrappleHook;
     [SerializeField] private GameObject harpoonBullet;
@@ -21,7 +21,7 @@ public class HarpoonGun : MonoBehaviour
     [SerializeField] private LayerMask mask = -1;
     [SerializeField] private Transform player;
     [SerializeField] private LineRenderer lr;
-    [SerializeField] private float knockbackVelocity = 0.01f;
+    [SerializeField] private float knockbackVelocity = 10f;
     private GameObject lastHarpoon;
     private Harpoon harpoonComponent;
     private bool inSuit;
@@ -52,8 +52,11 @@ public class HarpoonGun : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Transform gun = harpoonGunPos.GetChild(0);
-            Rigidbody playerBody = player.gameObject.GetComponent<Rigidbody>();
-            playerBody.velocity += knockbackVelocity * gun.forward;
+            if (!inSuit)
+            {
+                Rigidbody playerBody = player.gameObject.GetComponent<Rigidbody>();
+                playerBody.velocity += knockbackVelocity * gun.forward.normalized;
+            }
             Instantiate(inSuit ? harpoonBullet : bullet, gun).transform.parent = null;
 
         }
