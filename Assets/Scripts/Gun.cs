@@ -12,7 +12,7 @@ public class Gun : MonoBehaviour
     public float bulletSpeed;
     public int MaxMagSize;
     public int currentMagSize;
-    public float knockBackForce;
+    public float knockBackForce = 50;
 
 
     private float nextTimeToFire = 0f;

@@ -21,9 +21,11 @@ public class HarpoonGun : MonoBehaviour
     [SerializeField] private LayerMask mask = -1;
     [SerializeField] private Transform player;
     [SerializeField] private LineRenderer lr;
+    [SerializeField] private float knockbackVelocity = 0.01f;
     private GameObject lastHarpoon;
     private Harpoon harpoonComponent;
     private bool inSuit;
+    
     
     private void OnEnable()
     {
@@ -50,7 +52,10 @@ public class HarpoonGun : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Transform gun = harpoonGunPos.GetChild(0);
+            Rigidbody playerBody = player.gameObject.GetComponent<Rigidbody>();
+            playerBody.velocity += knockbackVelocity * gun.forward;
             Instantiate(inSuit ? harpoonBullet : bullet, gun).transform.parent = null;
+
         }
     }
     private void RotateGunToPointing()
