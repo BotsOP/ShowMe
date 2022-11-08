@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1159395514091046815}
   - component: {fileID: 1159395514091046814}
   m_Layer: 7
-  m_Name: Player
+  m_Name: Player(1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159395514091046784}
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000029504295}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: -81.13, y: 1.6, z: 6.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -51,10 +51,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 10
-  maxAcceleration: 100
+  maxAcceleration: 80
   maxAirAcceleration: 50
-  jumpHeight: 2
-  maxAirJumps: 2
+  jumpHeight: 4
+  maxAirJumps: 1
   maxGroundAngle: 25
   maxStairsAngle: 50
   maxSnapSpeed: 100
@@ -75,11 +75,11 @@ MonoBehaviour:
   buoyancy: 1.9
   maxSuitSpeed: 5
   suitJumpHeight: 1
-  ropePullForce: 3
-  ropeLength: 100
+  ropePullForce: 5
+  ropeLength: 50
   maxSuitAirJumps: 0
   cameraTransform: {fileID: 1159395514716801475}
-  mouseSensitivity: 200
+  mouseSensitivity: 50
   lr: {fileID: 0}
   raftTransform: {fileID: 0}
 --- !u!54 &1159395514091046815
@@ -377,15 +377,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   harpoonPullForce: 0.13
   harpoonDonePull: 2
-  gunDirectionChangeSpeed: 2
-  harpoonModel: {fileID: 1159395514434449163}
-  harpoon: {fileID: 4050047303687234627, guid: 6f5c175a560ebe34b8cdbdaaf5a319be, type: 3}
+  gunDirectionChangeSpeed: 5
+  harpoonGunPos: {fileID: 1159395514434449162}
+  harpoonGrappleHook: {fileID: 4050047303687234627, guid: 6f5c175a560ebe34b8cdbdaaf5a319be,
+    type: 3}
+  harpoonBullet: {fileID: 4050047303687234627, guid: 53bba82722744be49a077c7ec465ee1a,
+    type: 3}
+  bullet: {fileID: 6434869219626692798, guid: a3e6ea3e38f9a504298b29222348ddf8, type: 3}
   mask:
     serializedVersion: 2
     m_Bits: 235
   player: {fileID: 1159395514091046813}
-  playerRB: {fileID: 1159395514091046815}
   lr: {fileID: 1159395514434449157}
+  knockbackVelocity: 10
 --- !u!114 &1159395514716801474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +480,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0

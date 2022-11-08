@@ -22,6 +22,7 @@ public class HarpoonGun : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private LineRenderer lr;
     [SerializeField] private float knockbackVelocity = 10f;
+    private Rigidbody rb;
     private GameObject lastHarpoon;
     private Harpoon harpoonComponent;
     private bool inSuit;
@@ -40,7 +41,12 @@ public class HarpoonGun : MonoBehaviour
     {
         inSuit = suit;
     }
-    
+
+    private void Awake()
+    {
+        rb = player.gameObject.GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
         RotateGunToPointing();
@@ -54,11 +60,9 @@ public class HarpoonGun : MonoBehaviour
             Transform gun = harpoonGunPos.GetChild(0);
             if (!inSuit)
             {
-                Rigidbody playerBody = player.gameObject.GetComponent<Rigidbody>();
-                playerBody.velocity += knockbackVelocity * gun.forward.normalized;
+                rb.AddForce(knockbackVelocity * gun.forward.normalized, ForceMode.VelocityChange);
             }
-            Instantiate(inSuit ? harpoonBullet : bullet, gun).transform.parent = null;
-
+            Instantiate(inSuit ? harpoonBullet : bullet, harpoonGunPos).transform.parent = null;
         }
     }
     private void RotateGunToPointing()
@@ -70,11 +74,13 @@ public class HarpoonGun : MonoBehaviour
             Vector3 lookDir = hit.point - harpoonGunPos.position;
             lookDir = Vector3.RotateTowards(harpoonGunPos.forward, lookDir, singleStep, 0.0f);
             harpoonGunPos.rotation = Quaternion.LookRotation(lookDir);
-            Debug.DrawLine(transform.position, hit.point);
+            
+            Debug.DrawLine(transform.position, hit.point, Color.blue);
         }
         else
         {
-            Vector3 lookDir = Vector3.RotateTowards(harpoonGunPos.forward, harpoonGunPos.position + transform.forward * 1000, singleStep, 0.0f);
+            Debug.DrawLine(transform.position, transform.position + transform.forward, Color.red);
+            Vector3 lookDir = Vector3.RotateTowards(harpoonGunPos.forward, harpoonGunPos.position + transform.forward * 1000 - harpoonGunPos.position, singleStep, 0.0f);
             harpoonGunPos.rotation = Quaternion.LookRotation(lookDir);
         }
     }

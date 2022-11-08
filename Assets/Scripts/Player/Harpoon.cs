@@ -32,11 +32,6 @@ public class Harpoon : MonoBehaviour
     {
         StartCoroutine(ImpactDelay());
     }
-    private void OnCollisionExit(Collision other)
-    {
-        rb.useGravity = true;
-        rb.constraints = RigidbodyConstraints.None;
-    }
 
     IEnumerator ImpactDelay()
     {

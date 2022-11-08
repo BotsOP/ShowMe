@@ -11,7 +11,7 @@ public class Raft : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float t = Time.time / raftSpeed;
+        float t = Time.timeSinceLevelLoad / raftSpeed;
         OrientedPoint orientedPoint = GetOrientedPointInCurve(t % 1, (int)t % path.segmentCount);
         transform.position = orientedPoint.pos;
         transform.rotation = orientedPoint.rot;

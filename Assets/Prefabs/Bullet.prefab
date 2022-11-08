@@ -28,9 +28,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6434869219626692798}
-  m_LocalRotation: {x: -1, y: -0.000000029802319, z: 0.0000000054715197, w: 0.00000048859505}
-  m_LocalPosition: {x: 0.00004, y: 0.00005, z: -0.00288}
-  m_LocalScale: {x: 0.00093354733, y: 0.00093354733, z: 0.00093354733}
+  m_LocalRotation: {x: -1, y: 0, z: 0, w: 0}
+  m_LocalPosition: {x: 0.00004, y: 0.00005, z: 1.06}
+  m_LocalScale: {x: 0.26644, y: 0.26644, z: 0.26644}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -133,3 +133,4 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 512
+  isHarpoonBullet: 0

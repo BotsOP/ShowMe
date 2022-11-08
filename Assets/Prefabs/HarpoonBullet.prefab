@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3710816817363435257}
   - component: {fileID: 346957119019364700}
   - component: {fileID: 2536745814343140758}
-  - component: {fileID: 1173349913723447510}
   - component: {fileID: -4265080554267542989}
   - component: {fileID: -5732981437827743204}
+  - component: {fileID: 5548551745058401460}
   m_Layer: 4
   m_Name: HarpoonBullet
   m_TagString: Untagged
@@ -28,14 +28,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4050047303687234627}
-  m_LocalRotation: {x: -0.70825356, y: 0, z: 0, w: 0.7059581}
-  m_LocalPosition: {x: 0.00003, y: -0.00001, z: -0.00251}
-  m_LocalScale: {x: 1.7336, y: 1.7336, z: 1.7336}
+  m_LocalRotation: {x: -0.7059581, y: -0, z: -0, w: -0.70825356}
+  m_LocalPosition: {x: 0.00003, y: -0.000009997136, z: -0.0025100226}
+  m_LocalScale: {x: 127.99545, y: 127.99545, z: 127.99545}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90.186, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -270.187, y: 0, z: 0}
 --- !u!33 &346957119019364700
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -86,20 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1173349913723447510
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4050047303687234627}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5546347261141537002, guid: 724c5bb07a272f3489d22d986cb5a2b7, type: 3}
 --- !u!54 &-4265080554267542989
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -133,5 +119,18 @@ MonoBehaviour:
   timeUntilDestroyed: 10
   mask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   isHarpoonBullet: 1
+--- !u!65 &5548551745058401460
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4050047303687234627}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0011002953, y: 0.0050784564, z: 0.0012072299}
+  m_Center: {x: 0, y: 0, z: 0}

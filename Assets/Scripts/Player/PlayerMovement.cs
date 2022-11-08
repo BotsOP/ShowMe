@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -107,6 +108,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update () 
     {
+        if (InWater && !waterSuit)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
         
@@ -385,7 +391,10 @@ public class PlayerMovement : MonoBehaviour
     
     void AdjustVelocity () 
     {
-        if (InWater && waterSuit) {
+        if (InWater && waterSuit)
+        {
+            connectedBody = null;
+            
             velocity += Physics.gravity * ((1f - buoyancy * submergence) * Time.deltaTime);
             Vector3 waterVelocity = Input.GetAxis("Vertical") * cameraTransform.forward + 
                                     Input.GetAxis("Horizontal") * cameraTransform.right;
