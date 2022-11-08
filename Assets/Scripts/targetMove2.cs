@@ -13,7 +13,6 @@ public class targetMove2 : MonoBehaviour
     void Update()
     {
         transform.position = Vector3.Lerp(target.position, target2.position, curve.Evaluate((Time.time / speed) % 1));
-        Debug.Log($"{curve.Evaluate((Time.time / speed) % 1) }  {(Time.time / speed) % 1}");
     }
 
     private void OnDrawGizmos()

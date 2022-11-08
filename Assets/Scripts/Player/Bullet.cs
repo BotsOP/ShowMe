@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Vector3 dir = isHarpoonBullet ? transform.up : transform.forward;
+        Vector3 dir = isHarpoonBullet ? transform.up : -transform.forward;
         transform.position += dir * speed;
     }
 
